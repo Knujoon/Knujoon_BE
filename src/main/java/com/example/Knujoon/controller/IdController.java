@@ -4,6 +4,7 @@ package com.example.Knujoon.controller;
 import com.example.Knujoon.service.IdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -17,6 +18,12 @@ public class IdController {
     @PutMapping("/users/id")
     public String test() {
         idService.insertId();
+        return "good";
+    }
+
+    @GetMapping("/cicd/test")
+    public String cicd() {
+        System.out.println("hi");
         return "good";
     }
 
