@@ -51,14 +51,14 @@ public class IdService{
 
                     repository.save(temp2);
                     cnt++;
-                    System.out.println(handle);
+                    //System.out.println(handle);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        System.out.println(cnt);
+        //System.out.println(cnt);
 
 
     }
