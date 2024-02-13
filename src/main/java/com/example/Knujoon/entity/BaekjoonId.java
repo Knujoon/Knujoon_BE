@@ -2,21 +2,21 @@ package com.example.Knujoon.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Ids {
+public class BaekjoonId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;//고유 아이디..
 
-    @Column
-    private String id2;
+    @Column//아이디 저장
+    private String handle;
+
+
 
 
 
