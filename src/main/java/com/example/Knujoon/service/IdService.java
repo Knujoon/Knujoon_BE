@@ -28,6 +28,7 @@ public class IdService{
 
         ArrayList<String> IdList = new ArrayList<>();
         String result = "";
+        repository.deleteAll();//일단 전체적으로 지움
         int cnt = 0;
         for (int k = 1; k <= 6; k++) {
             try{
