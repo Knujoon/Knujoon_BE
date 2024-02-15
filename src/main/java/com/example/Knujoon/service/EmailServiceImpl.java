@@ -3,17 +3,22 @@ package com.example.Knujoon.service;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService{
     @Autowired
     JavaMailSender emailSender;
+    private final RedisService redisService;//이거 되나ㅏ..?
     public static final String ePw = createKey();
     private MimeMessage createMessage(String to)throws Exception{
         System.out.println("보내는 대상 : "+ to);
@@ -35,6 +40,9 @@ public class EmailServiceImpl implements EmailService{
         msgg+= "</div>";
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("tlsehdgk1234@gmail.com","Knujoon"));//보내는 사람
+
+
+        redisService.setValues(to,ePw, Duration.ofMinutes(1));//3분의 제한시간을 둠.. 그안에 인증을 해야함
         return message;
     }
 
