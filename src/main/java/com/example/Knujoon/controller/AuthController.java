@@ -25,11 +25,18 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(memberRequestDto));
     }
 
-    @PostMapping("email/send")
+    @PostMapping("/email/verifications-requests") //이메일을 전송해용
     public ResponseDto<?> sendEmail(@RequestParam("email") String email) throws Exception {
         emailService.sendSimpleMessage(email);
         return ResponseDto.success("이메일 전송 완료");
     }
+
+    @GetMapping("/email/verifications")
+    public ResponseDto<?> verificationsEmail(@RequestParam(value = "email",required = false) String email,@RequestParam(value = "code",required = false) String code){
+        return authService.verificationsEmail(email,code);
+    }
+
+
 
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
