@@ -1,6 +1,7 @@
 package com.example.Knujoon.controller;
 
 
+import com.example.Knujoon.dto.ResponseDto;
 import com.example.Knujoon.service.IdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,19 +16,17 @@ public class IdController {
     private final IdService idService;
     ///
 
-    @PutMapping("/users/id")
-    public String test() {
+    @PostMapping("/users/id")
+    public ResponseDto<?> test() {
         idService.insertId();
-        System.out.println("");
-        System.out.println("하이");
-        return "good";
+        return ResponseDto.success("good");
     }
 
-    @GetMapping("/cicd/test")
-    public String cicd() {
-        System.out.println("hi");
-        return "good";
-    }
+//    @GetMapping("/cicd/test")
+//    public String cicd() {
+//        System.out.println("hi");
+//        return "good";
+//    }
 
 
 

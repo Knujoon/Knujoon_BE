@@ -13,18 +13,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @NoArgsConstructor
 public class MemberRequestDto {
 
+    private String userId;
     private String email;
     private String password;
-
-    public Member toMember(PasswordEncoder passwordEncoder) {
+    //회원가입을 할 때 사용이 되는 친구죠?
+    public Member toMember(PasswordEncoder passwordEncoder,String profile_url) {
         return Member.builder()
+                .userId(userId)
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .profile_url(profile_url)
                 .authority(Authority.ROLE_USER)
                 .build();
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(email, password);
+        return new UsernamePasswordAuthenticationToken(userId, password);
     }
 }
