@@ -1,4 +1,5 @@
 package com.example.Knujoon.entity;
 
-public class Member {
+public class User {
+
 }

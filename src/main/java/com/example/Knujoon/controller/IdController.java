@@ -18,6 +18,8 @@ public class IdController {
     @PutMapping("/users/id")
     public String test() {
         idService.insertId();
+        System.out.println("");
+        System.out.println("하이");
         return "good";
     }
 
