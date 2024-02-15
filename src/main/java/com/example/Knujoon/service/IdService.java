@@ -17,25 +17,23 @@ import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
-public class IdService{
+public class IdService {
 
 
     private final BaekjoonIdRepository repository;
 
 
     @Transactional
-    public void insertId(){
-
+    public void insertId() {
         ArrayList<String> IdList = new ArrayList<>();
         String result = "";
         repository.deleteAll();//일단 전체적으로 지움
         int cnt = 0;
         for (int k = 1; k <= 6; k++) {
-            try{
-
-                URL url = new URL("https://solved.ac/api/v3/ranking/in_organization?organizationId=193&page="+k);//url 가져오기
+            try {
+                URL url = new URL("https://solved.ac/api/v3/ranking/in_organization?organizationId=193&page=" + k);//url 가져오기
                 BufferedReader br;
-                br = new BufferedReader(new InputStreamReader(url.openStream(),"utf-8"));
+                br = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
                 result = br.readLine();//다 읽어 내겠죠??
                 JSONParser jsonParser = new JSONParser();
                 JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
@@ -44,14 +42,13 @@ public class IdService{
                 for (int i = 0; i < track.size(); i++) {
                     JSONObject temp = (JSONObject) track.get(i);//i번째 객체를 가져오고
 
-                    String handle= temp.get("handle").toString();
+                    String userId = temp.get("handle").toString();
 
                     BaekjoonId temp2 = BaekjoonId.builder()
-                            .handle(handle)
+                            .userId(userId)
                             .build();
 
                     repository.save(temp2);
-                    cnt++;
                     //System.out.println(handle);
                 }
 
@@ -59,8 +56,25 @@ public class IdService{
                 e.printStackTrace();
             }
         }
-        //System.out.println(cnt);
+    }
+
+    public String getProfileUrl(String userId) {
+        String profileUrl = "";
+        String result = "";
+        try {
+            URL url = new URL("https://solved.ac/api/v3/user/show?handle=" + userId);//url 가져오기
+            BufferedReader br;
+            br = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
+            result = br.readLine();//다 읽어 내겠죠??
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+            profileUrl = (String) jsonObject.get("profileImageUrl");
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return profileUrl;
     }
 }

@@ -1,35 +1,30 @@
 package com.example.Knujoon.controller;
 
-import com.example.Knujoon.request.MemberRequestDto;
-import com.example.Knujoon.request.RequestLoginDto;
-import com.example.Knujoon.response.ResponseTokenDto;
+
+import com.example.Knujoon.dto.MemberResponseDto;
+import com.example.Knujoon.dto.ResponseDto;
+import com.example.Knujoon.service.IdService;
 import com.example.Knujoon.service.MemberService;
+import com.example.Knujoon.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
-@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/api/member")
 public class MemberController {
     private final MemberService memberService;
+    private final IdService idService;
 
-    @PostMapping("/login")
-    public ResponseTokenDto login(@RequestBody RequestLoginDto memberLoginRequestDto) {
-        String memberId = memberLoginRequestDto.getMemberId();
-        String password = memberLoginRequestDto.getPassword();
-        ResponseTokenDto tokenDto = memberService.login(memberId, password);
-        return tokenDto;
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseDto> findMemberInfoById() {
+        return ResponseEntity.ok(memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId()));
     }
 
-    @PostMapping("/test")
-    public String test() {
-        return "sucess";
+    @GetMapping("/{email}")
+    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
     }
+
 }
