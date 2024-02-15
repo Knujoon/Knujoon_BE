@@ -25,6 +25,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BaekjoonIdRepository baekjoonIdRepository;
     private final IdService idService;
+    private final RedisService redisService;
 
 
     @Transactional
@@ -74,6 +75,25 @@ public class AuthService {
 
         // 5. 토큰 발급
         return tokenDto;
+    }
+
+    @Transactional
+    public ResponseDto<?> verificationsEmail(String email,String code){
+
+        String findValue = redisService.getValues(email);
+        System.out.println(findValue);
+        if (findValue.equals("false")) {
+            return ResponseDto.fail("code timeout","인증시간이 지났습니다");
+        }
+
+        else if (findValue.equals(code)) {
+            return ResponseDto.success("인증이 완료되었습니다.");
+        }
+        else
+            return ResponseDto.fail("wrong value","일치하지 않은 코드 입니다");
+
+
+
     }
 
     @Transactional
