@@ -1,12 +1,10 @@
 package com.example.Knujoon.service;
 
-import com.example.Knujoon.dto.MemberRequestDto;
-import com.example.Knujoon.dto.MemberResponseDto;
-import com.example.Knujoon.dto.TokenDto;
-import com.example.Knujoon.dto.TokenRequestDto;
+import com.example.Knujoon.dto.*;
 import com.example.Knujoon.entity.Member;
 import com.example.Knujoon.entity.RefreshToken;
 import com.example.Knujoon.jwt.TokenProvider;
+import com.example.Knujoon.repository.BaekjoonIdRepository;
 import com.example.Knujoon.repository.MemberRepository;
 import com.example.Knujoon.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +23,33 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final BaekjoonIdRepository baekjoonIdRepository;
+    private final IdService idService;
+
 
     @Transactional
-    public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
+    public ResponseDto<?> confirmId(UserIdRequestDto requestDto) {
+        String userId = requestDto.getUserId();//해당 UserId
+        if (baekjoonIdRepository.existsByUserId(userId)) {
+            return ResponseDto.fail("duplicated_id","이 아이디는 중복되었습니다.");
+        }
+        else
+            return ResponseDto.success("회원가입이 가능한 아이디 입니다.");
+
+
+    }
+    @Transactional
+    public ResponseDto<?> signup(MemberRequestDto memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+            return ResponseDto.fail("duplicated_user", "이미 가입이 되어 있는 유저입니다.");
+            //throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
-        Member member = memberRequestDto.toMember(passwordEncoder);
-        return MemberResponseDto.of(memberRepository.save(member));
+        String profileUrl = idService.getProfileUrl(memberRequestDto.getUserId());
+        //profileurl을 불러와서 매개변수로 넘겨 봅시다.
+        Member member = memberRequestDto.toMember(passwordEncoder,profileUrl);
+        memberRepository.save(member);
+        return ResponseDto.success("회원가입 성공");
     }
 
     @Transactional
