@@ -16,7 +16,7 @@ public class BaekjoonId {
     private Long id;//고유 아이디..
 
     @Column//아이디 저장
-    private String handle;
+    private String userId;
 
 
 
