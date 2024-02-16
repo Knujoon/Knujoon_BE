@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService{
         message.setFrom(new InternetAddress("tlsehdgk1234@gmail.com","Knujoon"));//보내는 사람
 
 
-        redisService.setValues(to,ePw, Duration.ofMinutes(1));//3분의 제한시간을 둠.. 그안에 인증을 해야함
+        redisService.setValues(to,ePw, Duration.ofMinutes(3));//3분의 제한시간을 둠.. 그안에 인증을 해야함
         return message;
     }
 

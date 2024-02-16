@@ -44,9 +44,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenRequestDto));
     }
 
-    @GetMapping("/valid_id")//백준 아이디의 중복을 검사해줌요
-    public ResponseDto<?> confirmId(@RequestBody UserIdRequestDto requestDto){
-        return authService.confirmId(requestDto);
+    @GetMapping("/verifications-ids")//백준 아이디의 중복을 검사해줌요
+    public ResponseDto<?> confirmId(@RequestParam(value = "id") String userId){
+        return authService.confirmId(userId);
     }
 
 
