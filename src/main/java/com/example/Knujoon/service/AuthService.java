@@ -29,16 +29,15 @@ public class AuthService {
 
 
     @Transactional
-    public ResponseDto<?> confirmId(UserIdRequestDto requestDto) {
-        String userId = requestDto.getUserId();//해당 UserId
+    public ResponseDto<?> confirmId(String userId) {
         if (baekjoonIdRepository.existsByUserId(userId)) {
-            return ResponseDto.fail("duplicated_id","이 아이디는 중복되었습니다.");
-        }
-        else
+            return ResponseDto.fail("duplicated_id", "이 아이디는 중복되었습니다.");
+        } else
             return ResponseDto.success("회원가입이 가능한 아이디 입니다.");
 
 
     }
+
     @Transactional
     public ResponseDto<?> signup(MemberRequestDto memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
@@ -48,7 +47,7 @@ public class AuthService {
 
         String profileUrl = idService.getProfileUrl(memberRequestDto.getUserId());
         //profileurl을 불러와서 매개변수로 넘겨 봅시다.
-        Member member = memberRequestDto.toMember(passwordEncoder,profileUrl);
+        Member member = memberRequestDto.toMember(passwordEncoder, profileUrl);
         memberRepository.save(member);
         return ResponseDto.success("회원가입 성공");
     }
@@ -57,6 +56,7 @@ public class AuthService {
     public TokenDto login(MemberRequestDto memberRequestDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = memberRequestDto.toAuthentication();
+        System.out.println(authenticationToken.getName());
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
@@ -78,20 +78,20 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseDto<?> verificationsEmail(String email,String code){
+    public ResponseDto<?> verificationsEmail(String email, String code) {
 
         String findValue = redisService.getValues(email);
+
         System.out.println(findValue);
-        if (findValue.equals("false")) {
-            return ResponseDto.fail("code timeout","인증시간이 지났습니다");
-        }
+        //일단 이메일을 보내니깐 무조건 값은 가지고 있음
+        //이제 값을 찾았는데.
+        if (!findValue.equals("false") && !findValue.equals(code)) {//값은 찾았으나 코드가 다를 때.
+            return ResponseDto.fail("wrong value", "일치하지 않은 코드 입니다");
 
-        else if (findValue.equals(code)) {
+        } else if (!findValue.equals("false") && findValue.equals(code)) {
             return ResponseDto.success("인증이 완료되었습니다.");
-        }
-        else
-            return ResponseDto.fail("wrong value","일치하지 않은 코드 입니다");
-
+        } else
+            return ResponseDto.fail("time elapsed", "입력 시간이 초과되었습니다.");
 
 
     }
