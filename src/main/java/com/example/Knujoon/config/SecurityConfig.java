@@ -33,16 +33,17 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/h2-console/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/h2-console/**");
+//    }
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // CSRF 설정 Disable
-        http.csrf().ignoringRequestMatchers("/h2-console/**").disable()
+        //http.csrf().ignoringRequestMatchers("/h2-console/**").disable()
+        http.csrf().disable()
 
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 
@@ -66,7 +67,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
 
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
+                //.requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
