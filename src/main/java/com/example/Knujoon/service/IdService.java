@@ -23,7 +23,7 @@ public class IdService {
     private final BaekjoonIdRepository repository;
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void insertId() {
         ArrayList<String> IdList = new ArrayList<>();
         String result = "";
